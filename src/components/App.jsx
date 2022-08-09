@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 import Searchbar from './searchbar/searchbar';
 import ImageGallery from './imageGallery/imageGallery';
 import Button from './button/button';
@@ -7,57 +7,62 @@ import Modal from './modal/modal';
 import ApiImages from 'services/services';
 import '../index.css'
 
-class App extends Component {
-  state = {
-    searchValue: '',
-    largeUrl: '',
-    gallery: [],
-    loader: false,
-    page: 1
-  }
+function App () {
+  // state = {
+  //   searchValue: '',
+  //   largeUrl: '',
+  //   gallery: [],
+  //   loader: false,
+  //   page: 1
+  // }
+
+  const [searchValue, setSearchValue] = useState('');
+  const [gallery, setGallery] = useState([])
+  const [page, setPage] = useState(1)
+  const [loader, setLoader] = useState(false)
 
   
-handleSubmit = (e) => {
+const handleSubmit = (e) => {
     e.preventDefault()
-    const searchValue = e.currentTarget.elements.search.value;
-    this.setState({searchValue})
+    const value = e.currentTarget.elements.search.value;
+    setSearchValue(value)
     e.currentTarget.reset()
-    this.setState({gallery: [], loader: true})
-    ApiImages.fetchImages(searchValue, this.state.page).then(data => this.setState({gallery: data.hits})).finally(() => this.setState({loader: false}))
-    this.setState(prevState => ({ page: prevState.page + 1}))
+    setLoader(true)
+    ApiImages.fetchImages(value, page).then(data => setGallery(data.hits)).finally(() => setLoader(false))
+    setPage(page + 1)
   }
 
-handleButoonClick = () => {
-    const {searchValue, page} = this.state
-    ApiImages.fetchImages(searchValue, page).then(data => this.setState(prevState => ({gallery: [...prevState.gallery, ...data.hits]})))
-    this.setState(prevState => ({ page: prevState.page + 1}))
+const handleButonClick = () => {
+    console.log(searchValue)
+    ApiImages.fetchImages(searchValue, page).then(data => setGallery([...gallery, ...data.hits]))
+    setPage(page + 1)
   }
 
-handleModalClick = (largeUrl) => {
-    this.setState({largeUrl})
-}
+// handleModalClick = (largeUrl) => {
+//     this.setState({largeUrl})
+// }
 
-hundeCloseModal = () => {
-  this.setState({largeUrl: ""})
-}
+// hundeCloseModal = () => {
+//   this.setState({largeUrl: ""})
+// }
 
-render () {
+
     return (
       <div>
-        <Searchbar onSubmit={this.handleSubmit}/>
-        {this.state.loader && <BallTriangle height = "180"
+        <Searchbar onSubmit={handleSubmit}/>
+        {loader && <BallTriangle height = "180"
                                 width = "180"
                                 color = '#3f51b5'
                                 wrapperClass = {'loader'}
                               />}
-        <ImageGallery gallery={this.state.gallery} onClick={this.handleModalClick}/>
-        {this.state.largeUrl && <Modal url={this.state.largeUrl} onClose={this.hundeCloseModal}/> }
-        {this.state.gallery.length !== 0 && <Button onClick={this.handleButoonClick}/>}
+        <ImageGallery gallery={gallery}/>
+        {/* {this.state.largeUrl && <Modal url={this.state.largeUrl} onClose={this.hundeCloseModal}/> } */}
+        {gallery.length !== 0 && <Button onClick={handleButonClick}/>}
       </div>
 
     );
   }
+  // onClick={this.handleModalClick}  
   
-};
 
 export default App;
