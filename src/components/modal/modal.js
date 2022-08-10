@@ -11,12 +11,12 @@ function Modal ({url, onClose}) {
             onClose()
         }
     }
-
     useEffect (() => {
                 window.addEventListener('keydown', hundleEscBtn)
             return () => {
                 window.removeEventListener('keydown', hundleEscBtn )
             }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         }, []  
     )
 
