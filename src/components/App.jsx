@@ -8,18 +8,12 @@ import ApiImages from 'services/services';
 import '../index.css'
 
 function App () {
-  // state = {
-  //   searchValue: '',
-  //   largeUrl: '',
-  //   gallery: [],
-  //   loader: false,
-  //   page: 1
-  // }
 
   const [searchValue, setSearchValue] = useState('');
   const [gallery, setGallery] = useState([])
   const [page, setPage] = useState(1)
   const [loader, setLoader] = useState(false)
+  const [largeUrl, setLargeUrl] = useState('')
 
   
 const handleSubmit = (e) => {
@@ -38,13 +32,13 @@ const handleButonClick = () => {
     setPage(page + 1)
   }
 
-// handleModalClick = (largeUrl) => {
-//     this.setState({largeUrl})
-// }
+const handleModalClick = (largeUrl) => {
+  setLargeUrl(largeUrl)
+}
 
-// hundeCloseModal = () => {
-//   this.setState({largeUrl: ""})
-// }
+const hundeCloseModal = () => {
+  setLargeUrl('')
+}
 
 
     return (
@@ -55,14 +49,12 @@ const handleButonClick = () => {
                                 color = '#3f51b5'
                                 wrapperClass = {'loader'}
                               />}
-        <ImageGallery gallery={gallery}/>
-        {/* {this.state.largeUrl && <Modal url={this.state.largeUrl} onClose={this.hundeCloseModal}/> } */}
+        <ImageGallery gallery={gallery} onClick={handleModalClick}/>
+        {largeUrl && <Modal url={largeUrl} onClose={hundeCloseModal}/> }
         {gallery.length !== 0 && <Button onClick={handleButonClick}/>}
       </div>
 
     );
-  }
-  // onClick={this.handleModalClick}  
-  
+  }  
 
 export default App;

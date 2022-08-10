@@ -1,44 +1,39 @@
-import React, {Component} from "react";
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 
 const modalRoot = document.querySelector('#modal')
 
-class Modal extends Component {
-
-    componentDidMount () {
-        window.addEventListener('keydown', this.hundleEscBtn)
-    }
+function Modal ({url, onClose}) {
     
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.hundleEscBtn )
-    }
-
-    hundleEscBtn = (e) => {
+    const hundleEscBtn = (e) => {
         if(e.code === 'Escape') {
-            this.props.onClose()
+            console.log('esc')
+            onClose()
         }
     }
 
-    hundleClickOverlay = (e) => {
+    useEffect (() => {
+                window.addEventListener('keydown', hundleEscBtn)
+            return () => {
+                window.removeEventListener('keydown', hundleEscBtn )
+            }
+        }, []  
+    )
+
+    const hundleClickOverlay = (e) => {
         if(e.currentTarget === e.target) {
-            this.props.onClose()
+            onClose()
         }
     }
 
-    render () {
         return  createPortal(
-            <div className="Overlay" onClick={this.hundleClickOverlay}>
+            <div className="Overlay" onClick={hundleClickOverlay}>
                 <div className="Modal">
-                    <img src={this.props.url} alt="" />
+                    <img src={url} alt="" />
                 </div>
             </div>, modalRoot
             ) 
-    }
-    
-    
-    
-        
-    
+       
 } 
 
 export default Modal;
